@@ -50,6 +50,35 @@ class ProductController extends Controller
         }
         return $products;
     }
+
+    function top10()
+    {
+        return Product::orderBy('view', 'desc')->limit(5)->get();
+    }
+    function bestSaler()
+    {
+        $news =  Product::orderBy('created_at', 'desc')->limit(10)->get();
+
+        foreach ($news as $new) {
+            if ($new->images) {
+
+                $new->imageDetail = $new->images;
+            }
+        }
+        return $news;
+    }
+    function getNewTenProduct()
+    {
+        $news =  Product::orderBy('created_at', 'desc')->limit(10)->get();
+
+        foreach ($news as $new) {
+            if ($new->images) {
+
+                $new->imageDetail = $new->images;
+            }
+        }
+        return $news;
+    }
     function addProduct(Request $request)
     {
         try {

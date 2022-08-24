@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\GroupController;
 use App\Http\Controllers\Admin\MenuController;
+use App\Http\Controllers\Admin\PartnerController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
@@ -28,9 +30,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [UserController::class, 'user']);
     Route::get('/logout', [UserController::class, 'logout']);
     Route::prefix('product')->name('product')->group(function () {
-        Route::get('list', [ProductController::class, 'index']);
+        Route::get('/list', [ProductController::class, 'index']);
+        Route::get('/top10', [ProductController::class, 'top10']);
+        Route::get('/bestSaler', [ProductController::class, 'getNewTenProduct']);
 
-        Route::post('add', [ProductController::class, 'addProduct']);
+        Route::get('/getNew', [ProductController::class, 'getNewTenProduct']);
+
+
+        Route::post('/add', [ProductController::class, 'addProduct']);
 
         Route::delete('delete/{id}', [ProductController::class, 'delete']);
 
@@ -97,6 +104,24 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/delete/{id}', [MenuController::class, 'delete']);
         Route::get('update/{id}', [MenuController::class, 'getMenu']);
         Route::post('update/{id}', [MenuController::class, 'update']);
+    });
+    Route::prefix('partner')->name('partner')->group(function () {
+        Route::get('/list', [PartnerController::class, 'index']);
+        Route::get('/all', [PartnerController::class, 'getAll']);
+
+        Route::post('/add', [PartnerController::class, 'add']);
+        Route::get('update/{id}', [PartnerController::class, 'getPartner']);
+        Route::post('update/{id}', [PartnerController::class, 'update']);
+        Route::delete('/delete/{id}', [PartnerController::class, 'delete']);
+    });
+    Route::prefix('discount')->name('discount')->group(function () {
+        Route::get('/list', [DiscountController::class, 'index']);
+        Route::get('/all', [DiscountController::class, 'getAll']);
+
+        Route::post('/add', [DiscountController::class, 'add']);
+        Route::get('update/{id}', [DiscountController::class, 'getDiscount']);
+        Route::post('update/{id}', [DiscountController::class, 'update']);
+        Route::delete('/delete/{id}', [DiscountController::class, 'delete']);
     });
 });
 
