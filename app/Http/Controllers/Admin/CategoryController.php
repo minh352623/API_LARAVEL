@@ -34,7 +34,7 @@ class CategoryController extends Controller
             $category->image = $uploadedFileUrl;
         }
         if ($request->hasFile('icon_image')) {
-            $uploadedFileUrl = Cloudinary::upload($request->file('icon_image')->getRealPath())->getSecurePath();
+            $uploadedFileUrl = cloudinary()->upload($request->file('icon_image')->getRealPath())->getSecurePath();
 
             $category->icon_image = Storage::url($request->file('icon_image')->store('public/category'));
             $category->icon_image = $uploadedFileUrl;
