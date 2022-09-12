@@ -30,13 +30,11 @@ class CategoryController extends Controller
         if ($request->hasFile('file_path')) {
             $uploadedFileUrl = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
 
-            $category->image = Storage::url($request->file('file_path')->store('public/category'));
             $category->image = $uploadedFileUrl;
         }
         if ($request->hasFile('icon_image')) {
             $uploadedFileUrl = cloudinary()->upload($request->file('icon_image')->getRealPath())->getSecurePath();
 
-            $category->icon_image = Storage::url($request->file('icon_image')->store('public/category'));
             $category->icon_image = $uploadedFileUrl;
         }
         $category->save();
@@ -60,11 +58,14 @@ class CategoryController extends Controller
             }
             if ($request->hasFile('file_path')) {
 
-                $category->image = Storage::url($request->file('file_path')->store('public/category'));
+                $uploadedFileUrl = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
+
+                $category->icon_image = $uploadedFileUrl;
             }
             if ($request->hasFile('icon_image')) {
+                $uploadedFileUrl = cloudinary()->upload($request->file('icon_image')->getRealPath())->getSecurePath();
 
-                $category->icon_image = Storage::url($request->file('icon_image')->store('public/category'));
+                $category->icon_image = $uploadedFileUrl;
             }
             $category->save();
             return $category;
