@@ -176,7 +176,7 @@ class ProductController extends Controller
                 if ($request->hasFile('file_path')) {
                     $uploadedFileUrl = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
 
-                    $dataInsert['file_path'] = $uploadedFileUrl;
+                    $dataUpdate['file_path'] = $uploadedFileUrl;
                 }
                 $status = $product->update($dataUpdate);
 
