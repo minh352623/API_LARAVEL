@@ -246,7 +246,7 @@ class ProductController extends Controller
         $idPro = $request->idPro;
         $cate = $request->cate;
 
-        return Product::where('id', "<>", $idPro)->where('category_id', $cate)->get();
+        return Product::where('id', "<>", (int)$idPro)->where('category_id', $cate)->get();
     }
     function caculator()
     {
