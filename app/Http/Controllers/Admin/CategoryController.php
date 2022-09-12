@@ -7,6 +7,7 @@ use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
 
 class CategoryController extends Controller
 {
@@ -33,7 +34,7 @@ class CategoryController extends Controller
             $category->image = $uploadedFileUrl;
         }
         if ($request->hasFile('icon_image')) {
-            $uploadedFileUrl = cloudinary()->upload($request->file('icon_image')->getRealPath())->getSecurePath();
+            $uploadedFileUrl = Cloudinary::upload($request->file('icon_image')->getRealPath())->getSecurePath();
 
             $category->icon_image = Storage::url($request->file('icon_image')->store('public/category'));
             $category->icon_image = $uploadedFileUrl;
