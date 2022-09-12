@@ -97,8 +97,9 @@ class ProductController extends Controller
                 'category_id' => $request->category,
             ];
             if ($request->hasFile('file_path')) {
+                $uploadedFileUrl = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
 
-                $dataInsert['file_path'] = Storage::url($request->file('file_path')->store('public/product'));
+                $dataInsert['file_path'] = $uploadedFileUrl;
             }
             $product = $product->create($dataInsert);
 
@@ -106,10 +107,11 @@ class ProductController extends Controller
             if (!empty($request->image_detail)) {
 
                 foreach ((array)($request->image_detail) as $fileName) {
-                    $dataProductImageDetail = $this->storageTraitUploadMultiple($fileName, 'product');
+                    $uploadedFileUrl = cloudinary()->upload($request->file($fileName)->getRealPath())->getSecurePath();
+
                     $product->images()->create(
                         [
-                            'image_path' => $dataProductImageDetail['file_path'],
+                            'image_path' => $uploadedFileUrl,
 
                         ]
                     );
