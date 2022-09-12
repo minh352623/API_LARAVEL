@@ -116,6 +116,12 @@ class UserController extends Controller
         if ($request->group) {
             $user->group_id = $request->group;
         }
+        if ($request->phone) {
+            $user->phone = $request->phone;
+        }
+        if ($request->address) {
+            $user->address = $request->address;
+        }
         if ($request->password && $request->password != "") {
             $user->password = Hash::make($request->password);
         }
@@ -124,6 +130,9 @@ class UserController extends Controller
             $user->image = Storage::url($request->file('file_path')->store('public/users'));
         }
         $user->save();
+        $token = $request->user()->createToken('token')->plainTextToken;
+
+        $user->token = $token;
         return $user;
     }
     //

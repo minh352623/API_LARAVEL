@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
@@ -81,5 +82,17 @@ class CategoryController extends Controller
                 'status' => 'error'
             ]);
         }
+    }
+
+    //thống kê
+
+    function getCateTk()
+    {
+        $lists = DB::table('categories')
+            ->selectRaw('categories.name ,count(products.id) as pro_count')
+            ->join('products', 'categories.id', '=', 'products.category_id')
+            ->groupBy('categories.id', 'categories.name')
+            ->get();
+        return $lists;
     }
 }

@@ -144,6 +144,7 @@ class ProductController extends Controller
     function update($id, Request $request)
     {
         $product =  Product::find($id);
+        $product->cate_name = $product->category;
         if ($product) {
             return response()->json([
                 'data' => $product,
@@ -200,5 +201,69 @@ class ProductController extends Controller
                 'status' => 'error'
             ]);
         }
+    }
+
+    function getProductFilter(Request $request)
+    {
+        if ($request->order) {
+            $product = Product::orderBy('name', $request->order);
+        } else {
+            $product = Product::orderBy('name', 'asc');
+        }
+
+        if ($request->priceFilter) {
+            $product = Product::orderBy('price', $request->priceFilter);
+        } else {
+            $product = Product::orderBy('price', 'asc');
+        }
+
+        if ($request->cate && count($request->cate) > 0) {
+
+            $cate = $request->cate;
+            $product =   $product->whereIn('category_id', $cate);
+        }
+        if ($request->price && count($request->price) > 0) {
+            $price = $request->price;
+            $product =   $product->whereBetween('price', $price);
+        }
+        $product = $product->paginate(9);
+        foreach ($product as $item) {
+            if ($item->images) {
+
+                $item->image_Detail = $item->images;
+            }
+        }
+
+        return $product;
+    }
+
+    function getMayLike(Request $request)
+    {
+        $idPro = $request->idPro;
+        $cate = $request->cate;
+
+        return Product::where('id', "<>", $idPro)->where('category_id', $cate)->get();
+    }
+    function caculator()
+    {
+        $products = Product::all();
+        foreach ($products as $product) {
+            $commentList = $product->comments;
+
+
+            if (count($commentList) > 0) {
+                $rating = 0;
+
+                foreach ($commentList as $item) {
+                    $rating += (int)$item->rating;
+                }
+                $rating = number_format((float)($rating / (count($commentList))), 1, '.', '');
+                $product->start = $rating;
+                $product->update();
+            }
+        }
+
+
+        return $products;
     }
 }
