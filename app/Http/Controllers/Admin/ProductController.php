@@ -184,7 +184,7 @@ class ProductController extends Controller
                 if (!empty($request->image_detail)) {
                     $product->images()->where('product_id', $product->id)->delete();
                     foreach ((array)($request->image_detail) as $fileName) {
-                        $uploadedFileUrl = cloudinary()->upload($request->file($fileName)->getRealPath())->getSecurePath();
+                        $uploadedFileUrl = cloudinary()->upload(($fileName)->getRealPath())->getSecurePath();
 
                         $product->images()->create(
                             [
