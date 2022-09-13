@@ -15,7 +15,7 @@ return new class extends Migration
     {
         Schema::table('carts', function (Blueprint $table) {
             //
-            $table->dropColumn('carts');
+            $table->text('carts')->nullable();
         });
     }
 
