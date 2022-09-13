@@ -209,11 +209,12 @@ class ProductController extends Controller
 
     function getProductFilter(Request $request)
     {
-        if ($request->order) {
-            $product = Product::orderBy('name', $request->order);
-        } else {
-            $product = Product::orderBy('name', 'asc');
-        }
+
+        $product = Product::orderBy('name', $request->order);
+        // if ($request->order) {
+        // } else {
+        //     $product = Product::orderBy('name', 'asc');
+        // }
 
         if ($request->priceFilter) {
             $product = Product::orderBy('price', $request->priceFilter);
