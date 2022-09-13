@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::table('products', function (Blueprint $table) {
             //
             $table->dropColumn('price');
-            $table->float('price')->nullable();
         });
     }
 
