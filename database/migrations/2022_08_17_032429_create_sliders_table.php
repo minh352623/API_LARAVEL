@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('sliders', function (Blueprint $table) {
             $table->increments('id');
             $table->string('file_path');
-            $table->string('captoin');
+            $table->string('caption');
             $table->string('heading');
             $table->string('description');
 
