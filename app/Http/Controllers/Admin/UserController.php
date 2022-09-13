@@ -127,7 +127,7 @@ class UserController extends Controller
         }
         if ($request->hasFile('file_path')) {
 
-            $user->image = Storage::url($request->file('file_path')->store('public/users'));
+            $user->image = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
         }
         $user->save();
         $token = $request->user()->createToken('token')->plainTextToken;
