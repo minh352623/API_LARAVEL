@@ -32,7 +32,7 @@ class PartnerController extends Controller
             $partner = new Partner();
             if ($request->hasFile('file_path')) {
 
-                $partner->image = Storage::url($request->file('file_path')->store('public/partners'));
+                $partner->image = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
             }
             $partner->name = $request->name;
 
@@ -71,7 +71,7 @@ class PartnerController extends Controller
             $partner = Partner::find($id);
             if ($request->hasFile('file_path')) {
 
-                $partner->image = Storage::url($request->file('file_path')->store('public/partners'));
+                $partner->image = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
             }
             $partner->name = $request->name;
 
