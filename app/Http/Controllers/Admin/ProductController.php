@@ -210,36 +210,36 @@ class ProductController extends Controller
     function getProductFilter(Request $request)
     {
 
-        $product = Product::orderBy('name', $request->order);
-        // if ($request->order) {
-        // } else {
-        //     $product = Product::orderBy('name', 'asc');
-        // }
+        if ($request->order) {
+            $products = Product::orderBy('name', $request->order);
+        } else {
+            $products = Product::orderBy('name', 'asc');
+        }
 
         if ($request->priceFilter) {
-            $product = Product::orderBy('price', $request->priceFilter);
+            $products = Product::orderBy('price', $request->priceFilter);
         } else {
-            $product = Product::orderBy('price', 'asc');
+            $products = Product::orderBy('price', 'asc');
         }
 
         if ($request->cate && count($request->cate) > 0) {
 
             $cate = $request->cate;
-            $product =   $product->whereIn('category_id', $cate);
+            $products =   $products->whereIn('category_id', $cate);
         }
         if ($request->price && count($request->price) > 0) {
             $price = $request->price;
-            $product =   $product->whereBetween('price', $price);
+            $products =   $products->whereBetween('price', $price);
         }
-        $product = $product->paginate(9);
-        foreach ($product as $item) {
+        $products = $products->paginate(9);
+        foreach ($products as $item) {
             if ($item->images) {
 
                 $item->image_Detail = $item->images;
             }
         }
 
-        return $product;
+        return $products;
     }
 
     function getMayLike(Request $request)
