@@ -209,17 +209,17 @@ class ProductController extends Controller
 
     function getProductFilter(Request $request)
     {
-
+        $products = Product::orderBy('name', 'asc');
         if ($request->order) {
-            $products = Product::orderBy('name', $request->order);
+            $products = $products->orderBy('name', $request->order);
         } else {
-            $products = Product::orderBy('name', 'asc');
+            $products = $products->orderBy('name', 'asc');
         }
 
         if ($request->priceFilter) {
-            $products = Product::orderBy('price', $request->priceFilter);
+            $products = $products->orderBy('price', $request->priceFilter);
         } else {
-            $products = Product::orderBy('price', 'asc');
+            $products = $products->orderBy('price', 'asc');
         }
 
         if ($request->cate && count($request->cate) > 0) {

@@ -69,7 +69,7 @@ class BillController extends Controller
     function vnPay(Request $request)
     {
         $vnp_Url = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-        $vnp_Returnurl = "http://127.0.0.1:8000/vnpay_return";
+        $vnp_Returnurl = "https://shoppet-tm.herokuapp.com/vnpay_return";
         $vnp_TmnCode = "N8169UO7"; //Mã website tại VNPAY 
         $vnp_HashSecret = "VHDMVMERXAJSLPGFLTRLWCFLGAIGFQEB"; //Chuỗi bí mật
 
