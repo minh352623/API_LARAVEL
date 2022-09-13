@@ -23,7 +23,8 @@ class BillController extends Controller
                 'address' => $request->address,
                 'total' => $request->total,
                 'user_id' => $request->userId,
-                'pttt' => $request->pttt
+                'pttt' => $request->pttt,
+                'status' => 0
             ]);
         } else {
 
@@ -32,7 +33,9 @@ class BillController extends Controller
                 'address' => $request->address,
                 'total' => $request->total,
                 'user_id' => $request->userId,
-                'pttt' => 'Pay after recieve'
+                'pttt' => 'Pay after recieve',
+                'status' => 0
+
             ]);
         }
 
