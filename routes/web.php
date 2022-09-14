@@ -30,7 +30,7 @@ Route::get('/chinh-sach-quyen-rieng-tu', function () {
 Route::get('/auth/facebook/callback', function () {
     $user = Socialite::driver('facebook')->user();
 
-    dd($user);
+    dd($user->name);
 });
 Route::get('/auth/facebook', function () {
     return Socialite::driver('facebook')->redirect();
