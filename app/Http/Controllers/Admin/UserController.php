@@ -227,8 +227,9 @@ class UserController extends Controller
             $userNew->image =  $user->getAvatar();
             $userNew->password =  Hash::make('123456789');
             $userNew->group_id =  3;
+            $userNew->save();
         }
 
-        return $user;
+        return $userNew;
     }
 }
