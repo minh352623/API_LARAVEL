@@ -225,7 +225,12 @@ class UserController extends Controller
         if ($check == 0) {
             $userNew = new User();
             $userNew->name =  $user->getName();
-            $userNew->email =  $user->getEmail();
+            if ($user->getEmail()) {
+
+                $userNew->email =  $user->getEmail();
+            } else {
+                $userNew->email =  'test@gmail.com';
+            }
             $userNew->image =  $user->getAvatar();
             $userNew->password =  Hash::make('123456789');
             $userNew->group_id =  3;
