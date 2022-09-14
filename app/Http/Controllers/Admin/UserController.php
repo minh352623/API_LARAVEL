@@ -245,30 +245,35 @@ class UserController extends Controller
     // }
     function callbackFacebook(Request $request)
     {
-        $users = User::all();
-        $check = 0;
-        $userNew = null;
-        foreach ($users as $item) {
-            if ($request->name == $item->name) {
-                $check = 1;
-                $userNew = $item;
+        try {
+            if (!Auth::attempt(['name' => $request->name])) {
+                $userNew = new User();
+                $userNew->name =  $request->name;
 
-                break;
-            } else {
-                $check  = 0;
+                $userNew->email =  'test@gmail.com';
+                $userNew->image =  "";
+                $userNew->password =  Hash::make('123456789');
+                $userNew->group_id =  3;
+                $userNew->phone = "0123456789";
+
+                $userNew->save();
+                $user = Auth::user();
+                $token = $request->user()->createToken('token')->plainTextToken;
+                $cookie = cookie('jwt', $token, 60 * 24); //1 day
+                $user->token = $token;
+
+                if ($cookie) {
+                    return response([
+                        'token' => $token,
+                        'cookie' => $cookie,
+                        'user' => $user,
+                    ])->withCookie($cookie);
+                } else {
+                    return response([
+                        'message' => "không có cookie"
+                    ]);
+                }
             }
-        }
-        if ($check == 0) {
-            $userNew = new User();
-            $userNew->name =  $request->name;
-
-            $userNew->email =  'test@gmail.com';
-            $userNew->image =  "";
-            $userNew->password =  Hash::make('123456789');
-            $userNew->group_id =  3;
-            $userNew->phone = "0123456789";
-
-            $userNew->save();
             $user = Auth::user();
             $token = $request->user()->createToken('token')->plainTextToken;
             $cookie = cookie('jwt', $token, 60 * 24); //1 day
@@ -285,24 +290,8 @@ class UserController extends Controller
                     'message' => "không có cookie"
                 ]);
             }
-        } else {
-
-            $user = Auth::user();
-            $token = $request->user()->createToken('token')->plainTextToken;
-            $cookie = cookie('jwt', $token, 60 * 24); //1 day
-            $user->token = $token;
-
-            if ($cookie) {
-                return response([
-                    'token' => $token,
-                    'cookie' => $cookie,
-                    'user' => $userNew,
-                ])->withCookie($cookie);
-            } else {
-                return response([
-                    'message' => "không có cookie"
-                ]);
-            }
+        } catch (\Exception $e) {
+            return response($e->getMessage());
         }
     }
 }
