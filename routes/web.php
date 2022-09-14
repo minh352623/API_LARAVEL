@@ -29,8 +29,25 @@ Route::get('/chinh-sach-quyen-rieng-tu', function () {
 });
 Route::get('/auth/facebook/callback', function () {
     $user = Socialite::driver('facebook')->user();
+    $users = User::all();
+    foreach ($users as $item) {
+        if ($user->name == $item->name) {
+            $check = 1;
+            break;
+        } else {
+            $check  = 0;
+        }
+    }
+    if ($check == 1) {
+        $userNew = new User();
+        $userNew->name =  $user->name;
+        $userNew->email =  $user->email;
+        $userNew->image =  $user->avatar;
+        $userNew->password =  Hash::make('123456789');
+        $userNew->group_id =  3;
+    }
 
-    dd($user->name);
+    return $user;
 });
 Route::get('/auth/facebook', function () {
     return Socialite::driver('facebook')->redirect();
