@@ -33,6 +33,6 @@ return [
     'facebook' => [
         'client_id' => '1047256275918854',
         'client_secret' => '06749a545cc136dc8389f7d0b37e0de6',
-        'redirect' => '/auth/facebook/callback',
+        'redirect' => 'https://shoppet-tm.herokuapp.com/auth/facebook/callback',
     ],
 ];

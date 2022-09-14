@@ -26,7 +26,8 @@ Route::get('/chinh-sach-quyen-rieng-tu', function () {
     return 'Chinh sach quyen rieng tu';
 });
 Route::get('/auth/facebook/callback', function () {
-    return 'Chinh sach quyen rieng tu';
+    $user = Socialite::driver('facebook')->user();
+    dd($user);
 });
 Route::get('/auth/facebook', function () {
     return Socialite::driver('facebook')->redirect();
