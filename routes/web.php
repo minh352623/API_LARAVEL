@@ -33,6 +33,7 @@ Route::get('/auth/facebook/callback', function () {
     foreach ($users as $item) {
         if ($user->name == $item->name) {
             $check = 1;
+            break;
         } else {
             $check  = 0;
         }
