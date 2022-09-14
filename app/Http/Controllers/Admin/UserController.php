@@ -269,10 +269,40 @@ class UserController extends Controller
             $userNew->phone = "0123456789";
 
             $userNew->save();
-            return $userNew;
+            $user = Auth::user();
+            $token = $request->user()->createToken('token')->plainTextToken;
+            $cookie = cookie('jwt', $token, 60 * 24); //1 day
+            $user->token = $token;
+
+            if ($cookie) {
+                return response([
+                    'token' => $token,
+                    'cookie' => $cookie,
+                    'user' => $user,
+                ])->withCookie($cookie);
+            } else {
+                return response([
+                    'message' => "không có cookie"
+                ]);
+            }
         } else {
 
-            return $userNew;
+            $user = Auth::user();
+            $token = $request->user()->createToken('token')->plainTextToken;
+            $cookie = cookie('jwt', $token, 60 * 24); //1 day
+            $user->token = $token;
+
+            if ($cookie) {
+                return response([
+                    'token' => $token,
+                    'cookie' => $cookie,
+                    'user' => $userNew,
+                ])->withCookie($cookie);
+            } else {
+                return response([
+                    'message' => "không có cookie"
+                ]);
+            }
         }
     }
 }
