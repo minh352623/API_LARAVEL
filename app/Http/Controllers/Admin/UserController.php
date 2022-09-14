@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Laravel\Socialite\Facades\Socialite;
+
 // return $request->all();
 // $user = User::where('email', $request->email)->first();
 // if ($user && Hash::check($request->password, $user->password)) {
@@ -196,5 +198,37 @@ class UserController extends Controller
             'message' => 'success',
             "status" => $status
         ])->withCookie($cookie);
+    }
+
+
+    function redirecFace()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    function callbackFacebook()
+    {
+        $user = Socialite::driver('facebook')->user();
+        $users = User::all();
+        $check = 0;
+
+        foreach ($users as $item) {
+            if ($user->name == $item->name) {
+                $check = 1;
+                break;
+            } else {
+                $check  = 0;
+            }
+        }
+        if ($check == 0) {
+            $userNew = new User();
+            $userNew->name =  $user->getName();
+            $userNew->email =  $user->getEmail();
+            $userNew->image =  $user->getAvatar();
+            $userNew->password =  Hash::make('123456789');
+            $userNew->group_id =  3;
+        }
+
+        return $user;
     }
 }
