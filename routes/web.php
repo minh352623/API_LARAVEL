@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Client\BillController;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
 use Laravel\Socialite\Facades\Socialite;
 /*
@@ -27,7 +29,24 @@ Route::get('/chinh-sach-quyen-rieng-tu', function () {
 });
 Route::get('/auth/facebook/callback', function () {
     $user = Socialite::driver('facebook')->user();
-    dd($user);
+    $users = User::all();
+    foreach ($users as $item) {
+        if ($user->name == $item->name) {
+            $check = 1;
+        } else {
+            $check  = 0;
+        }
+    }
+    if ($check == 1) {
+        $userNew = new User();
+        $userNew->name =  $user->name;
+        $userNew->email =  $user->email;
+        $userNew->image =  $user->email;
+        $userNew->password =  Hash::make('123456789');
+        $userNew->group_id =  3;
+    }
+
+    return $user;
 });
 Route::get('/auth/facebook', function () {
     return Socialite::driver('facebook')->redirect();
