@@ -272,7 +272,6 @@ class UserController extends Controller
                 $token = $userNew1->createToken('token')->plainTextToken;
                 return $userNew;
             } else {
-                $token = $userNew->createToken('token')->plainTextToken;
 
                 return $userNew;
             }
