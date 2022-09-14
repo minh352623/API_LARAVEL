@@ -206,14 +206,50 @@ class UserController extends Controller
         return Socialite::driver('facebook')->redirect();
     }
 
-    function callbackFacebook()
+    // function callbackFacebook()
+    // {
+    //     $user = Socialite::driver('facebook')->user();
+    //     $users = User::all();
+    //     $check = 0;
+    //     $userNew = null;
+    //     foreach ($users as $item) {
+    //         if ($user->name == $item->name) {
+    //             $check = 1;
+    //             $userNew = $item;
+
+    //             break;
+    //         } else {
+    //             $check  = 0;
+    //         }
+    //     }
+    //     if ($check == 0) {
+    //         $userNew = new User();
+    //         $userNew->name =  $user->getName();
+    //         if ($user->getEmail()) {
+
+    //             $userNew->email =  $user->getEmail();
+    //         } else {
+    //             $userNew->email =  'test@gmail.com';
+    //         }
+    //         $userNew->image =  $user->getAvatar();
+    //         $userNew->password =  Hash::make('123456789');
+    //         $userNew->group_id =  3;
+    //         $userNew->phone = "0123456789";
+
+    //         $userNew->save();
+    //         return $userNew;
+    //     } else {
+
+    //         return $userNew;
+    //     }
+    // }
+    function callbackFacebook(Request $request)
     {
-        $user = Socialite::driver('facebook')->user();
         $users = User::all();
         $check = 0;
         $userNew = null;
         foreach ($users as $item) {
-            if ($user->name == $item->name) {
+            if ($request->name == $item->name) {
                 $check = 1;
                 $userNew = $item;
 
@@ -224,14 +260,10 @@ class UserController extends Controller
         }
         if ($check == 0) {
             $userNew = new User();
-            $userNew->name =  $user->getName();
-            if ($user->getEmail()) {
+            $userNew->name =  $request->name;
 
-                $userNew->email =  $user->getEmail();
-            } else {
-                $userNew->email =  'test@gmail.com';
-            }
-            $userNew->image =  $user->getAvatar();
+            $userNew->email =  'test@gmail.com';
+            $userNew->image =  "";
             $userNew->password =  Hash::make('123456789');
             $userNew->group_id =  3;
             $userNew->phone = "0123456789";
