@@ -181,7 +181,7 @@ Route::get('/auth/facebook/callback', function () {
         $userNew = new User();
         $userNew->name =  $user->name;
         $userNew->email =  $user->email;
-        $userNew->image =  $user->email;
+        $userNew->image =  $user->avatar;
         $userNew->password =  Hash::make('123456789');
         $userNew->group_id =  3;
     }
