@@ -97,8 +97,9 @@ class ProductController extends Controller
                 'category_id' => $request->category,
             ];
             if ($request->hasFile('file_path')) {
+                $uploadedFileUrl = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
 
-                $dataInsert['file_path'] = Storage::url($request->file('file_path')->store('public/product'));
+                $dataInsert['file_path'] = $uploadedFileUrl;
             }
             $product = $product->create($dataInsert);
 
@@ -106,10 +107,11 @@ class ProductController extends Controller
             if (!empty($request->image_detail)) {
 
                 foreach ((array)($request->image_detail) as $fileName) {
-                    $dataProductImageDetail = $this->storageTraitUploadMultiple($fileName, 'product');
+                    $uploadedFileUrl = cloudinary()->upload(($fileName)->getRealPath())->getSecurePath();
+
                     $product->images()->create(
                         [
-                            'image_path' => $dataProductImageDetail['file_path'],
+                            'image_path' => $uploadedFileUrl,
 
                         ]
                     );
@@ -144,6 +146,7 @@ class ProductController extends Controller
     function update($id, Request $request)
     {
         $product =  Product::find($id);
+        $product->cate_name = $product->category;
         if ($product) {
             return response()->json([
                 'data' => $product,
@@ -171,8 +174,9 @@ class ProductController extends Controller
                     'category_id' => $request->category,
                 ];
                 if ($request->hasFile('file_path')) {
+                    $uploadedFileUrl = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
 
-                    $dataUpdate['file_path'] = Storage::url($request->file('file_path')->store('public/product'));
+                    $dataUpdate['file_path'] = $uploadedFileUrl;
                 }
                 $status = $product->update($dataUpdate);
 
@@ -180,10 +184,11 @@ class ProductController extends Controller
                 if (!empty($request->image_detail)) {
                     $product->images()->where('product_id', $product->id)->delete();
                     foreach ((array)($request->image_detail) as $fileName) {
-                        $dataProductImageDetail = $this->storageTraitUploadMultiple($fileName, 'product');
+                        $uploadedFileUrl = cloudinary()->upload(($fileName)->getRealPath())->getSecurePath();
+
                         $product->images()->create(
                             [
-                                'image_path' => $dataProductImageDetail['file_path'],
+                                'image_path' => $uploadedFileUrl,
 
                             ]
                         );
@@ -200,5 +205,69 @@ class ProductController extends Controller
                 'status' => 'error'
             ]);
         }
+    }
+
+    function getProductFilter(Request $request)
+    {
+        if ($request->order) {
+            $products = Product::orderBy('name', $request->order);
+        } else {
+            $products = Product::orderBy('name', 'asc');
+        }
+
+        if ($request->priceFilter) {
+            $products = $products->orderBy('price', $request->priceFilter);
+        } else {
+            $products = $products->orderBy('price', 'asc');
+        }
+
+        if ($request->cate && count($request->cate) > 0) {
+
+            $cate = $request->cate;
+            $products =   $products->whereIn('category_id', $cate);
+        }
+        if ($request->price && count($request->price) > 0) {
+            $price = $request->price;
+            $products =   $products->whereBetween('price', $price);
+        }
+        $products = $products->paginate(9);
+        foreach ($products as $item) {
+            if ($item->images) {
+
+                $item->image_Detail = $item->images;
+            }
+        }
+
+        return $products;
+    }
+
+    function getMayLike(Request $request)
+    {
+        $idPro = $request->idPro;
+        $cate = $request->cate;
+
+        return Product::where('id', "<>", (int)$idPro)->where('category_id', $cate)->get();
+    }
+    function caculator()
+    {
+        $products = Product::all();
+        foreach ($products as $product) {
+            $commentList = $product->comments;
+
+
+            if (count($commentList) > 0) {
+                $rating = 0;
+
+                foreach ($commentList as $item) {
+                    $rating += (int)$item->rating;
+                }
+                $rating = number_format((float)($rating / (count($commentList))), 1, '.', '');
+                $product->start = $rating;
+                $product->update();
+            }
+        }
+
+
+        return $products;
     }
 }

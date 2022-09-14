@@ -34,7 +34,7 @@ class SliderController extends Controller
             $slider = new Slider();
             if ($request->hasFile('file_path')) {
 
-                $slider->file_path = Storage::url($request->file('file_path')->store('public/sliders'));
+                $slider->file_path = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
             }
             $slider->caption = $request->caption;
             $slider->heading = $request->heading;
@@ -84,7 +84,7 @@ class SliderController extends Controller
             }
             if ($request->hasFile('file_path')) {
 
-                $slider->file_path = Storage::url($request->file('file_path')->store('public/sliders'));
+                $slider->file_path = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
             }
 
             $slider->save();

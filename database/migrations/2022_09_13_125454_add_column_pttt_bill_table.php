@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sliders', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('file_path');
-            $table->string('caption');
-            $table->string('heading');
-            $table->string('description');
+        Schema::table('bills', function (Blueprint $table) {
+            //
 
-            $table->timestamps();
+
+
+            $table->string('pttt')->nullable();
+            
         });
     }
 
@@ -31,6 +30,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sliders');
+        Schema::table('bills', function (Blueprint $table) {
+            //
+        });
     }
 };

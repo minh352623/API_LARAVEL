@@ -32,7 +32,7 @@ class DiscountController extends Controller
             $discount = new Discount();
             if ($request->hasFile('file_path')) {
 
-                $discount->image = Storage::url($request->file('file_path')->store('public/discounts'));
+                $discount->image = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
             }
             $discount->caption = $request->caption;
             $discount->title = $request->title;
@@ -73,7 +73,7 @@ class DiscountController extends Controller
             $discount = Discount::find($id);
             if ($request->hasFile('file_path')) {
 
-                $discount->image = Storage::url($request->file('file_path')->store('public/partners'));
+                $discount->image = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
             }
             $discount->caption = $request->caption;
             $discount->title = $request->title;

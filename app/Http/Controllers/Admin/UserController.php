@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\Response;
+use Laravel\Socialite\Facades\Socialite;
+
 // return $request->all();
 // $user = User::where('email', $request->email)->first();
 // if ($user && Hash::check($request->password, $user->password)) {
@@ -116,14 +118,23 @@ class UserController extends Controller
         if ($request->group) {
             $user->group_id = $request->group;
         }
+        if ($request->phone) {
+            $user->phone = $request->phone;
+        }
+        if ($request->address) {
+            $user->address = $request->address;
+        }
         if ($request->password && $request->password != "") {
             $user->password = Hash::make($request->password);
         }
         if ($request->hasFile('file_path')) {
 
-            $user->image = Storage::url($request->file('file_path')->store('public/users'));
+            $user->image = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
         }
         $user->save();
+        $token = $request->user()->createToken('token')->plainTextToken;
+
+        $user->token = $token;
         return $user;
     }
     //
@@ -136,6 +147,8 @@ class UserController extends Controller
         $user = new User();
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->phone = '0123456789';
+
         $user->password = Hash::make($request->password);
         $user->group_id = 3;
         $user->save();
@@ -185,5 +198,85 @@ class UserController extends Controller
             'message' => 'success',
             "status" => $status
         ])->withCookie($cookie);
+    }
+
+
+    function redirecFace()
+    {
+        return Socialite::driver('facebook')->redirect();
+    }
+
+    // function callbackFacebook()
+    // {
+    //     $user = Socialite::driver('facebook')->user();
+    //     $users = User::all();
+    //     $check = 0;
+    //     $userNew = null;
+    //     foreach ($users as $item) {
+    //         if ($user->name == $item->name) {
+    //             $check = 1;
+    //             $userNew = $item;
+
+    //             break;
+    //         } else {
+    //             $check  = 0;
+    //         }
+    //     }
+    //     if ($check == 0) {
+    //         $userNew = new User();
+    //         $userNew->name =  $user->getName();
+    //         if ($user->getEmail()) {
+
+    //             $userNew->email =  $user->getEmail();
+    //         } else {
+    //             $userNew->email =  'test@gmail.com';
+    //         }
+    //         $userNew->image =  $user->getAvatar();
+    //         $userNew->password =  Hash::make('123456789');
+    //         $userNew->group_id =  3;
+    //         $userNew->phone = "0123456789";
+
+    //         $userNew->save();
+    //         return $userNew;
+    //     } else {
+
+    //         return $userNew;
+    //     }
+    // }
+    function callbackFacebook(Request $request)
+    {
+        try {
+            $users = User::all();
+            $check = 0;
+            $userNew = null;
+            foreach ($users as $item) {
+                if ($request->name == $item->name) {
+                    $check = 1;
+                    $userNew = $item;
+
+                    break;
+                } else {
+                    $check  = 0;
+                }
+            }
+            if ($check == 0) {
+                $userNew1 = new User();
+                $userNew1->name =  $request->name;
+
+                $userNew1->email =  'test@gmail.com';
+                $userNew1->password =  Hash::make('123456789');
+                $userNew1->group_id =  3;
+                $userNew1->phone = "0123456789";
+
+                $userNew1->save();
+                $token = $userNew1->createToken('token')->plainTextToken;
+                return $userNew;
+            } else {
+
+                return $userNew;
+            }
+        } catch (\Exception $e) {
+            return response($e->getMessage());
+        }
     }
 }

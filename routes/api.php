@@ -9,10 +9,15 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\SliderController;
-
-
+use App\Http\Controllers\Client\BillController;
+use App\Http\Controllers\Client\CartController;
+use App\Http\Controllers\Client\CommentController;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,12 +43,15 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
         Route::post('/add', [ProductController::class, 'addProduct']);
+        Route::post('/getMayLike', [ProductController::class, 'getMayLike']);
 
         Route::delete('delete/{id}', [ProductController::class, 'delete']);
 
-        Route::get('/{id}', [ProductController::class, 'update']);
+        Route::post('/filter', [ProductController::class, 'getProductFilter']);
 
-        Route::post('/{id}', [ProductController::class, 'postUpdate']);
+        Route::get('/update/{id}', [ProductController::class, 'update']);
+
+        Route::post('/update/{id}', [ProductController::class, 'postUpdate']);
     });
 
     Route::prefix('groups')->name('groups')->group(function () {
@@ -67,6 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('category')->name('category')->group(function () {
         Route::get('/all', [CategoryController::class, 'getAll']);
 
+        Route::get('/getCateTk', [CategoryController::class, 'getCateTk']);
         Route::get('/list', [CategoryController::class, 'index']);
         Route::post('/add', [CategoryController::class, 'add']);
         Route::get('update/{id}', [CategoryController::class, 'getCategory']);
@@ -123,8 +132,45 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('update/{id}', [DiscountController::class, 'update']);
         Route::delete('/delete/{id}', [DiscountController::class, 'delete']);
     });
+    Route::prefix('cart')->name('cart')->group(function () {
+
+        Route::post('/add', [CartController::class, 'add']);
+        Route::get('/all/{id}', [CartController::class, 'all']);
+
+        Route::post('/delete', [CartController::class, 'delete']);
+    });
+    Route::prefix('bill')->name('bill')->group(function () {
+        Route::get('/billTk', [BillController::class, 'getBillMonth']);
+
+        Route::post('/add', [BillController::class, 'add']);
+        Route::get('/detail/{id}', [BillController::class, 'detail']);
+        Route::post('/list', [BillController::class, 'list']);
+        Route::get('/listBillAdmin', [BillController::class, 'listBillAdmin']);
+        Route::post('/update/{id}', [BillController::class, 'update']);
+        Route::post('/vnPay', [BillController::class, 'vnPay']);
+    });
+    Route::prefix('comment')->name('comment')->group(function () {
+        Route::get('/get/{product}', [CommentController::class, 'get']);
+        Route::get('/getAll', [CommentController::class, 'getAll']);
+        Route::delete('/delete/{id}', [CommentController::class, 'delete']);
+
+        Route::post('/add', [CommentController::class, 'add']);
+        Route::post('/caculatorComment', [CommentController::class, 'caculatorComment']);
+    });
 });
 
 
 Route::post('register', [UserController::class, 'register']);
 Route::post('login', [UserController::class, 'login']);
+Route::get('caculator', [ProductController::class, 'caculator']);
+Route::post('loginWithFace', [UserController::class, 'callbackFacebook']);
+
+
+Route::group(['middleware' => ['web']], function () {
+    // your routes here
+    Route::get('/chinh-sach-quyen-rieng-tu', function () {
+        return 'Chinh sach quyen rieng tu';
+    });
+    Route::get('/auth/facebook/callback', [UserController::class, 'callbackFacebook']);
+    Route::get('/auth/facebook', [UserController::class, 'redirecFace']);
+});

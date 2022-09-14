@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
@@ -26,12 +27,14 @@ class CategoryController extends Controller
         $category->name = $request->name;
 
         if ($request->hasFile('file_path')) {
+            $uploadedFileUrl = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
 
-            $category->image = Storage::url($request->file('file_path')->store('public/category'));
+            $category->image = $uploadedFileUrl;
         }
         if ($request->hasFile('icon_image')) {
+            $uploadedFileUrl = cloudinary()->upload($request->file('icon_image')->getRealPath())->getSecurePath();
 
-            $category->icon_image = Storage::url($request->file('icon_image')->store('public/category'));
+            $category->icon_image = $uploadedFileUrl;
         }
         $category->save();
         return $category;
@@ -54,11 +57,14 @@ class CategoryController extends Controller
             }
             if ($request->hasFile('file_path')) {
 
-                $category->image = Storage::url($request->file('file_path')->store('public/category'));
+                $uploadedFileUrl = cloudinary()->upload($request->file('file_path')->getRealPath())->getSecurePath();
+
+                $category->image = $uploadedFileUrl;
             }
             if ($request->hasFile('icon_image')) {
+                $uploadedFileUrl = cloudinary()->upload($request->file('icon_image')->getRealPath())->getSecurePath();
 
-                $category->icon_image = Storage::url($request->file('icon_image')->store('public/category'));
+                $category->icon_image = $uploadedFileUrl;
             }
             $category->save();
             return $category;
@@ -81,5 +87,17 @@ class CategoryController extends Controller
                 'status' => 'error'
             ]);
         }
+    }
+
+    //thống kê
+
+    function getCateTk()
+    {
+        $lists = DB::table('categories')
+            ->selectRaw('categories.name ,count(products.id) as pro_count')
+            ->join('products', 'categories.id', '=', 'products.category_id')
+            ->groupBy('categories.id', 'categories.name')
+            ->get();
+        return $lists;
     }
 }
