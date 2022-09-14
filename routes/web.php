@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Client\BillController;
 use Illuminate\Support\Facades\Route;
-
+use Laravel\Socialite\Facades\Socialite;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,3 +22,12 @@ Route::get('/test', function () {
 });
 
 Route::get('/vnpay_return', [BillController::class, 'vnPay_return']);
+Route::get('/chinh-sach-quyen-rieng-tu', function () {
+    return 'Chinh sach quyen rieng tu';
+});
+Route::get('/auth/facebook/callback', function () {
+    return 'Chinh sach quyen rieng tu';
+});
+Route::get('/auth/facebook', function () {
+    return Socialite::driver('facebook')->redirect();
+});
