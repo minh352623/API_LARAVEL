@@ -246,49 +246,35 @@ class UserController extends Controller
     function callbackFacebook(Request $request)
     {
         try {
-            if (!Auth::attempt(['name' => $request->name])) {
-                $userNew = new User();
-                $userNew->name =  $request->name;
+            $users = User::all();
+            $check = 0;
+            $userNew = null;
+            foreach ($users as $item) {
+                if ($request->name == $item->name) {
+                    $check = 1;
+                    $userNew = $item;
 
-                $userNew->email =  'test@gmail.com';
-                $userNew->image =  "";
-                $userNew->password =  Hash::make('123456789');
-                $userNew->group_id =  3;
-                $userNew->phone = "0123456789";
-
-                $userNew->save();
-                $user = Auth::user();
-                $token = $request->user()->createToken('token')->plainTextToken;
-                $cookie = cookie('jwt', $token, 60 * 24); //1 day
-                $user->token = $token;
-
-                if ($cookie) {
-                    return response([
-                        'token' => $token,
-                        'cookie' => $cookie,
-                        'user' => $user,
-                    ])->withCookie($cookie);
+                    break;
                 } else {
-                    return response([
-                        'message' => "không có cookie"
-                    ]);
+                    $check  = 0;
                 }
             }
-            $user = Auth::user();
-            $token = $request->user()->createToken('token')->plainTextToken;
-            $cookie = cookie('jwt', $token, 60 * 24); //1 day
-            $user->token = $token;
+            if ($check == 0) {
+                $userNew1 = new User();
+                $userNew1->name =  $request->name;
 
-            if ($cookie) {
-                return response([
-                    'token' => $token,
-                    'cookie' => $cookie,
-                    'user' => $user,
-                ])->withCookie($cookie);
+                $userNew1->email =  'test@gmail.com';
+                $userNew1->password =  Hash::make('123456789');
+                $userNew1->group_id =  3;
+                $userNew1->phone = "0123456789";
+
+                $userNew1->save();
+                $token = $userNew1->createToken('token')->plainTextToken;
+                return $userNew;
             } else {
-                return response([
-                    'message' => "không có cookie"
-                ]);
+                $token = $userNew->createToken('token')->plainTextToken;
+
+                return $userNew;
             }
         } catch (\Exception $e) {
             return response($e->getMessage());
