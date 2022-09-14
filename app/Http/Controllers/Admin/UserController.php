@@ -211,10 +211,12 @@ class UserController extends Controller
         $user = Socialite::driver('facebook')->user();
         $users = User::all();
         $check = 0;
-
+        $userNew = null;
         foreach ($users as $item) {
             if ($user->name == $item->name) {
                 $check = 1;
+                $userNew = $item;
+
                 break;
             } else {
                 $check  = 0;
@@ -228,8 +230,10 @@ class UserController extends Controller
             $userNew->password =  Hash::make('123456789');
             $userNew->group_id =  3;
             $userNew->save();
-        }
+            return $userNew;
+        } else {
 
-        return $userNew;
+            return $userNew;
+        }
     }
 }
