@@ -2,7 +2,7 @@
 
 
 <h3>DEMO</h3>
-<a href="https://shoppet-59ed0.firebaseapp.com/shop">https://shoppet-59ed0.firebaseapp.com/shop</a>
+<a href="https://main--leafy-trifle-205341.netlify.app/home">https://main--leafy-trifle-205341.netlify.app/home</a>
 
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
